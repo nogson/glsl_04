@@ -1,51 +1,35 @@
-const path = require('path');
-
+const webpack = require('webpack')
 module.exports = {
-  entry: path.resolve(__dirname, './src/main.js'), //ビルドするファイル
+  entry: {
+    app: [ './client.js' ]
+  },
   output: {
-    path: path.resolve(__dirname, './dist'), //ビルドしたファイルを吐き出す場所
-    filename: 'bundle.js', //ビルドした後のファイル名
-    publicPath: '/dist'
+    filename: 'bundle.js'
+  },
+  context: __dirname,
+  node: {
+    __filename: true
   },
   module: {
-    loaders: [{
-        test: /\.html$/,
-        loader: "html-loader"
-      },
+    loaders: [
+      // use ES2015 on this app
       {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loader: 'babel-loader'
+        test: /\.jsx?$/,
+        exclude: /(node_modules|bower_components)/,
+        loader: 'babel'
       },
+      // allow third-party glslify/browserify modules to work
       {
         test: /node_modules/,
-        loader: 'ify-loader'
-      },
-      {
-        test: /\.(glsl|frag|vert)$/,
-        loader: 'raw-loader',
-        exclude: /node_modules/
-      },
-      {
-        test: /\.(glsl|frag|vert)$/,
-        loader: 'glslify-loader',
-        exclude: /node_modules/
+        loader: 'ify'
       }
     ],
+    // allow local glslify/browserify config to work
     postLoaders: [
       {
         test: /\.js$/,
         loader: 'ify'
       }
     ]
-  },
-  devServer: {
-    contentBase: path.resolve(__dirname, './src'),
-    inline: true,
-    open: true
-  },
-  devtool: 'source-map',
-  plugins: [
-
-  ]
-};
+  }
+}
