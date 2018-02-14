@@ -1,9 +1,8 @@
 global.THREE = require('three');
 const createOrbitViewer = require('three-orbit-viewer')(THREE);
 const createBackground = require('three-vignette-background');
-const noiseMaterial = require('./materials/noise');
-const inlineMaterial = require('./materials/inline');
-const WebCam = require('./materials/webcam.js');
+const WebCam = require('./src/js/webcam.js');
+const Test = require('./src/js/test.js');
 
 const app = createOrbitViewer({
   clearColor: 0xFFF,
@@ -21,10 +20,14 @@ const bg = createBackground({
 app.scene.add(bg);
 
 
-const webCam = new WebCam();
-webCam.getMaterial().then(function(result){
-  console.log(result)
-});
+// const webCam = new WebCam();
+// webCam.getMaterial().then(function(result){
+//   console.log(result)
+// });
+
+const test = new Test();
+let mesh = test.create();
+app.scene.add(mesh);
 
 // const boxGeo = new THREE.BoxGeometry(1, 1, 1)
 // const mat1 = noiseMaterial()
@@ -39,18 +42,13 @@ webCam.getMaterial().then(function(result){
 
 // let angle = 0
 app.on('tick', dt => {
-  let width = window.innerWidth
-  let height = window.innerHeight
-  // bg.style({
-  //   aspect: width / height,
-  //   aspectCorrection: true,
-  //   scale: 2.5,
-  //   grainScale: 0
-  // })
+  let width = window.innerWidth;
+  let height = window.innerHeight;
 
-  // box.rotation.y += dt * 0.0002
-  // const r = 2
-  // angle += dt * 0.0006
-  // sphere.position.x = Math.cos(angle) * r
-  // sphere.position.z = Math.sin(angle) * r
+  bg.style({
+    aspect: width / height,
+    aspectCorrection: true,
+    scale: 2.5,
+    grainScale: 0
+  });
 })

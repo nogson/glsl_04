@@ -1,24 +1,16 @@
-const hmr = require('../lib/three-hmr')
+const hmr = require('../../lib/three-hmr')
 const cache = hmr.cache(__filename)
 const glslify = require('glslify')
 
 const vertexShader = glslify('./shaders/noise.vert')
 const fragmentShader = glslify('./shaders/noise.frag')
 
-// module.exports = function (opt) {
-//   const material = new THREE.RawShaderMaterial({
-//     vertexShader, fragmentShader
-//   })
-//   hmr.enable(cache, material)
-//   return material
-// }
-
 module.exports = class WebCam {
   constructor() {
     this.material = null;
 
     this.media = navigator.mediaDevices.getUserMedia({
-      audio: true,
+      //audio: true,
       video: true,
     });
 
