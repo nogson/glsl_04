@@ -1,8 +1,11 @@
 global.THREE = require('three');
 const createOrbitViewer = require('three-orbit-viewer')(THREE);
 const createBackground = require('three-vignette-background');
+const Stats = require('stats.js');
 const WebCam = require('./src/js/webcam.js');
 const Test = require('./src/js/test.js');
+
+const body = document.getElementsByTagName('body')[0];
 
 const app = createOrbitViewer({
   clearColor: 0xFFF,
@@ -18,6 +21,10 @@ const bg = createBackground({
   noiseAlpha:0.0
 })
 app.scene.add(bg);
+
+let stats = new Stats();
+body.appendChild( stats.dom );
+
 
 
 // const webCam = new WebCam();
@@ -51,4 +58,7 @@ app.on('tick', dt => {
     scale: 2.5,
     grainScale: 0
   });
+
+  stats.update();
+
 })
