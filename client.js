@@ -8,24 +8,28 @@ const Test = require('./src/js/test.js');
 const body = document.getElementsByTagName('body')[0];
 
 const app = createOrbitViewer({
-  clearColor: 0xFFF,
+  clearColor: 0xffffff,
   clearAlpha: 1.0,
   fov: 45,
   near: 0.1,
   for: 1000,
-  position: new THREE.Vector3(3, 2, -3)
+  position: new THREE.Vector3(0, 0,-3)
 });
+
+//ヘルパー
+const axisHelper = new THREE.AxisHelper(100); 
+app.scene.add(axisHelper);
+// const cameraHelper = new THREE.CameraHelper( app.camera );
+// app.scene.add(cameraHelper);
 
 const bg = createBackground({
   colors: ['#fff', '#ccc'],
   noiseAlpha:0.0
 })
-app.scene.add(bg);
+//app.scene.add(bg);
 
 let stats = new Stats();
 body.appendChild( stats.dom );
-
-
 
 // const webCam = new WebCam();
 // webCam.getMaterial().then(function(result){
