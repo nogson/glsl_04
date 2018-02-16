@@ -19,47 +19,88 @@ module.exports = class Test {
     dtPosition = gpuCompute.createTexture();
     //移動方向用のテクスチャ
     dtVelocity = gpuCompute.createTexture();
-    console.log(dtPosition)
+
     // テクスチャにGPUで計算するために初期情報を埋めていく
     this.fillTextures(dtPosition, dtVelocity);
 
     // shaderプログラムのアタッチ
     this.velocityVariable = gpuCompute.addVariable("textureVelocity", velocityShader, dtVelocity);
     this.positionVariable = gpuCompute.addVariable("texturePosition", positionShader, dtPosition);
+
+    // 一連の関係性を構築するためのおまじない
+    gpuCompute.setVariableDependencies(this.velocityVariable, [this.positionVariable, this.velocityVariable]);
+    gpuCompute.setVariableDependencies(this.positionVariable, [this.positionVariable, this.velocityVariable]);
+
+    initPosition();
   }
 
   create() {
 
-    var side = 32;
+    const geometry = new THREE.SphereBufferGeometry(1, 32, 32);
+    const material = new THREE.MeshBasicMaterial({
+      color: 0xcccccc,
+      wireframe: true
+    });
+    const mesh = new THREE.Mesh(geometry, material);
 
-    var amount = Math.pow(side, 2);
-    var data = new Uint8Array(amount);
-    console.log(data)
-    for (var i = 0; i < amount; i++) {
-      data[i] = Math.random() * 256;
+    return mesh;
+  }
+
+
+  // ②パーティクルそのものの情報を決めていく。
+  initPosition() {
+
+    // 最終的に計算された結果を反映するためのオブジェクト。
+    // 位置情報はShader側(texturePosition, textureVelocity)
+    // で決定されるので、以下のように適当にうめちゃってOK
+
+    geometry = new THREE.BufferGeometry();
+    var positions = new Float32Array(PARTICLES * 3);
+    var p = 0;
+    for (var i = 0; i < PARTICLES; i++) {
+      positions[p++] = 0;
+      positions[p++] = 0;
+      positions[p++] = 0;
     }
-    
-    var dataTex = new THREE.DataTexture(data, side, side, THREE.LuminanceFormat, THREE.UnsignedByteType);
 
-    dataTex.magFilter = THREE.NearestFilter;
-    dataTex.needsUpdate = true;
+    // uv情報の決定。テクスチャから情報を取り出すときに必要
+    var uvs = new Float32Array(PARTICLES * 2);
+    p = 0;
+    for (var j = 0; j < WIDTH; j++) {
+      for (var i = 0; i < WIDTH; i++) {
+        uvs[p++] = i / (WIDTH - 1);
+        uvs[p++] = j / (WIDTH - 1);
+      }
+    }
 
-    /*Plane*/
-    var planeGeo = new THREE.PlaneBufferGeometry(1, 1);
-    var planeMat = new THREE.MeshBasicMaterial({ color: 0x4422ff, alphaMap: dataTex, transparent: true,side:THREE.DoubleSide });
-    var plane = new THREE.Mesh(planeGeo, planeMat);
-
-    return plane;
+    // attributeをgeometryに登録する
+    geometry.addAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.addAttribute('uv', new THREE.BufferAttribute(uvs, 2));
 
 
-    // const geometry = new THREE.SphereBufferGeometry(1, 32, 32);
-    // const material = new THREE.MeshBasicMaterial({
-    //   color: 0xffffff,
-    //   wireframe: true
-    // });
-    // const mesh = new THREE.Mesh(geometry, material);
+    // uniform変数をオブジェクトで定義
+    // 今回はカメラをマウスでいじれるように、計算に必要な情報もわたす。
+    particleUniforms = {
+      texturePosition: { value: null },
+      textureVelocity: { value: null },
+      cameraConstant: { value: getCameraConstant(camera) }
+    };
 
-    // return mesh;
+
+
+    // Shaderマテリアル これはパーティクルそのものの描写に必要なシェーダー
+    var material = new THREE.ShaderMaterial({
+      uniforms: particleUniforms,
+      vertexShader: document.getElementById('particleVertexShader').textContent,
+      fragmentShader: document.getElementById('particleFragmentShader').textContent
+    });
+    material.extensions.drawBuffers = true;
+    var particles = new THREE.Points(geometry, material);
+    particles.matrixAutoUpdate = false;
+    particles.updateMatrix();
+
+    // パーティクルをシーンに追加
+    scene.add(particles);
   }
 
   //テクスチャの初期情報を設定

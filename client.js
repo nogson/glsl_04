@@ -26,7 +26,7 @@ const bg = createBackground({
   colors: ['#fff', '#ccc'],
   noiseAlpha:0.0
 })
-//app.scene.add(bg);
+app.scene.add(bg);
 
 let stats = new Stats();
 body.appendChild( stats.dom );
@@ -36,9 +36,9 @@ body.appendChild( stats.dom );
 //   console.log(result)
 // });
 
-const test = new Test();
-let mesh = test.create();
-app.scene.add(mesh);
+// const test = new Test();
+// let mesh = test.create();
+// app.scene.add(mesh);
 
 // const boxGeo = new THREE.BoxGeometry(1, 1, 1)
 // const mat1 = noiseMaterial()
@@ -52,7 +52,7 @@ app.scene.add(mesh);
 // app.scene.add(sphere)
 
 // let angle = 0
-app.on('tick', dt => {
+app.on('tick', (dt) => {
   let width = window.innerWidth;
   let height = window.innerHeight;
 
