@@ -2,19 +2,26 @@ const hmr = require('../../lib/three-hmr')
 const cache = hmr.cache(__filename)
 const glslify = require('glslify')
 
-const velocityShader = glslify('./shaders/velocityShader.vert')
-const positionShader = glslify('./shaders/positionShader.vert')
+const computeShaderVelocity = glslify('./shaders/computeShaderVelocity.frag');
+const computeShaderPosition = glslify('./shaders/computeShaderPosition.frag');
+const particleVertexShader = glslify('./shaders/particleVertexShader.vert');
+const particleFragmentShader = glslify('./shaders/particleFragmentShader.frag');
 
-const width = window.innerWidth;
-const height = window.innerHeight;
+const WIDTH = window.innerWidth;
+const HEIGHT = window.innerHeight;
+var PARTICLES = WIDTH * HEIGHT;
+
 
 let dtPosition;
 let dtVelocity;
+let camera;
+let scene;
 
 module.exports = class Test {
-  constructor(renderer) {
-    const gpuCompute = new GPUComputationRenderer(width, height, renderer);
-
+  constructor(app) {
+    const gpuCompute = new GPUComputationRenderer(WIDTH, HEIGHT, app.renderer);
+    camera = app.camera;
+    scene = app.scene;
     //位置情報用のテクスチャ
     dtPosition = gpuCompute.createTexture();
     //移動方向用のテクスチャ
@@ -24,14 +31,14 @@ module.exports = class Test {
     this.fillTextures(dtPosition, dtVelocity);
 
     // shaderプログラムのアタッチ
-    this.velocityVariable = gpuCompute.addVariable("textureVelocity", velocityShader, dtVelocity);
-    this.positionVariable = gpuCompute.addVariable("texturePosition", positionShader, dtPosition);
+    this.velocityVariable = gpuCompute.addVariable("textureVelocity", computeShaderVelocity, dtVelocity);
+    this.positionVariable = gpuCompute.addVariable("texturePosition", computeShaderPosition, dtPosition);
 
     // 一連の関係性を構築するためのおまじない
     gpuCompute.setVariableDependencies(this.velocityVariable, [this.positionVariable, this.velocityVariable]);
     gpuCompute.setVariableDependencies(this.positionVariable, [this.positionVariable, this.velocityVariable]);
 
-    initPosition();
+    this.initPosition();
   }
 
   create() {
@@ -50,11 +57,13 @@ module.exports = class Test {
   // ②パーティクルそのものの情報を決めていく。
   initPosition() {
 
+    console.log('ok')
+
     // 最終的に計算された結果を反映するためのオブジェクト。
     // 位置情報はShader側(texturePosition, textureVelocity)
     // で決定されるので、以下のように適当にうめちゃってOK
 
-    geometry = new THREE.BufferGeometry();
+    var geometry = new THREE.BufferGeometry();
     var positions = new Float32Array(PARTICLES * 3);
     var p = 0;
     for (var i = 0; i < PARTICLES; i++) {
@@ -80,10 +89,16 @@ module.exports = class Test {
 
     // uniform変数をオブジェクトで定義
     // 今回はカメラをマウスでいじれるように、計算に必要な情報もわたす。
-    particleUniforms = {
-      texturePosition: { value: null },
-      textureVelocity: { value: null },
-      cameraConstant: { value: getCameraConstant(camera) }
+    var particleUniforms = {
+      texturePosition: {
+        value: null
+      },
+      textureVelocity: {
+        value: null
+      },
+      cameraConstant: {
+        value: this.getCameraConstant(camera)
+      }
     };
 
 
@@ -91,16 +106,24 @@ module.exports = class Test {
     // Shaderマテリアル これはパーティクルそのものの描写に必要なシェーダー
     var material = new THREE.ShaderMaterial({
       uniforms: particleUniforms,
-      vertexShader: document.getElementById('particleVertexShader').textContent,
-      fragmentShader: document.getElementById('particleFragmentShader').textContent
+      vertexShader: particleVertexShader,
+      fragmentShader: particleFragmentShader
     });
-    material.extensions.drawBuffers = true;
+
+    console.log(material)
+    //material.extensions.drawBuffers = true;
     var particles = new THREE.Points(geometry, material);
     particles.matrixAutoUpdate = false;
     particles.updateMatrix();
 
     // パーティクルをシーンに追加
     scene.add(particles);
+  }
+
+  // カメラオブジェクトからシェーダーに渡したい情報を引っ張ってくる関数
+  // カメラからパーティクルがどれだけ離れてるかを計算し、パーティクルの大きさを決定するため。
+  getCameraConstant(camera) {
+    return window.innerHeight / (Math.tan(THREE.Math.DEG2RAD * 0.5 * camera.fov) / camera.zoom);
   }
 
   //テクスチャの初期情報を設定
@@ -144,7 +167,7 @@ if (module.hot) {
     if (err) throw errr
   })
   hmr.update(cache, {
-    velocityShader,
-    // fragmentShader
+    computeShaderPosition,
+    computeShaderVelocity
   })
 }

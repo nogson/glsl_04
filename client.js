@@ -2,7 +2,7 @@ global.THREE = require('three');
 const createOrbitViewer = require('three-orbit-viewer')(THREE);
 const createBackground = require('three-vignette-background');
 const Stats = require('stats.js');
-const WebCam = require('./src/js/webcam.js');
+// const WebCam = require('./src/js/webcam.js');
 const Test = require('./src/js/test.js');
 
 const body = document.getElementsByTagName('body')[0];
@@ -36,7 +36,7 @@ body.appendChild( stats.dom );
 //   console.log(result)
 // });
 
-// const test = new Test();
+const test = new Test(app);
 // let mesh = test.create();
 // app.scene.add(mesh);
 
