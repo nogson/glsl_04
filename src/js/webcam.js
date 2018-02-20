@@ -2,8 +2,8 @@ const hmr = require('../../lib/three-hmr')
 const cache = hmr.cache(__filename)
 const glslify = require('glslify')
 
-const vertexShader = glslify('./shaders/noise.vert')
-const fragmentShader = glslify('./shaders/noise.frag')
+const vertexShader = glslify('./shaders/vertexShader.vert')
+const fragmentShader = glslify('./shaders/fragmentShader.frag')
 
 module.exports = class WebCam {
   constructor() {
@@ -27,10 +27,17 @@ module.exports = class WebCam {
           videoTexture.minFilter = THREE.LinearFilter;
           videoTexture.magFilter = THREE.LinearFilter;
           videoTexture.format = THREE.RGBFormat;
+          videoTexture.needsUpdate = true;
 
           this.material = new THREE.ShaderMaterial({
             vertexShader: vertexShader,
-            fragmentShader: fragmentShader
+            fragmentShader: fragmentShader,
+            uniforms: {
+              'videoTexture': {
+                type:'t',
+                  value: videoTexture
+              }
+          },
           });
 
           resolve();
