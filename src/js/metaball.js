@@ -9,7 +9,6 @@ const fragmentShader = glslify('./shaders/metaball/fragmentShader.frag');
 
 let composer;
 
-
 module.exports = class MeatBall {
   constructor(app) {
     console.log(app)
