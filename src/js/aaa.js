@@ -21,6 +21,7 @@ console.log(shader)
 
 window.onload = function () {
     let renderer;
+    
     let camera;
     let scene;
     let clock;
