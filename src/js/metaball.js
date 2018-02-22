@@ -25,6 +25,10 @@ module.exports = class MeatBall {
           'resolution':{
             type:'v2',
             value:new THREE.Vector2(windowWidth,windowHeight)
+          },
+          'time':{
+            type:'f',
+            value : 0.0
           }
 
       },
@@ -40,6 +44,10 @@ module.exports = class MeatBall {
 
   getComposer(){
     return composer;
+  }
+
+  update(){
+
   }
 };
 

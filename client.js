@@ -5,6 +5,9 @@ const Stats = require('stats.js');
 // const Test = require('./src/js/test.js');
 const MeataBall = require('./src/js/metaball.js');
 
+const clock = new THREE.Clock();
+
+let time = 0.0;
 let windowWidth = window.innerWidth;
 let windowHeight = window.innerHeight;
 
@@ -68,14 +71,13 @@ const composer = meatball.getComposer();
 render();
 
 function render() {
-
+  time = clock.getElapsedTime();
   windowWidth = window.innerWidth;
   windowHeight = window.innerHeight;
 
-  stats.update();
-
+  stats.update();  
   composer.render();
-
+  composer.passes[1].uniforms.time.value = time;
   requestAnimationFrame(render);
 }
 
