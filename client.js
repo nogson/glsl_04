@@ -5,8 +5,6 @@ const Stats = require('stats.js');
 // const Test = require('./src/js/test.js');
 const MeataBall = require('./src/js/metaball.js');
 
-
-
 let windowWidth = window.innerWidth;
 let windowHeight = window.innerHeight;
 

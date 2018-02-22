@@ -6,7 +6,8 @@ const EffectComposer = require('three-effectcomposer')(THREE);
 const vertexShader = glslify('./shaders/metaball/vertexShader.vert');
 const fragmentShader = glslify('./shaders/metaball/fragmentShader.frag');
 
-
+let windowWidth = window.innerWidth;
+let windowHeight = window.innerHeight;
 let composer;
 
 module.exports = class MeatBall {
@@ -17,10 +18,15 @@ module.exports = class MeatBall {
 
     var myEffect = {
       uniforms: {
-          "tDiffuse": {
+          'tDiffuse': {
             type: 't',
             value: null
+          },
+          'resolution':{
+            type:'v2',
+            value:new THREE.Vector2(windowWidth,windowHeight)
           }
+
       },
       vertexShader: vertexShader,
       fragmentShader: fragmentShader
