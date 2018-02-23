@@ -4,17 +4,18 @@ const Stats = require('stats.js');
 // const WebCam = require('./src/js/webcam.js');
 // const Test = require('./src/js/test.js');
 const MeataBall = require('./src/js/metaball.js');
-
 const clock = new THREE.Clock();
+const loader = new THREE.TextureLoader();
 
 let time = 0.0;
 let windowWidth = window.innerWidth;
 let windowHeight = window.innerHeight;
+let aspect = windowWidth / windowHeight;
 
 const app = {
-  renderer : new THREE.WebGLRenderer(),
-  scene : new THREE.Scene(),
-  camera : new THREE.PerspectiveCamera(60, windowWidth / windowHeight, 0.1, 1000)
+  renderer: new THREE.WebGLRenderer(),
+  scene: new THREE.Scene(),
+  camera: new THREE.PerspectiveCamera(60, windowWidth / windowHeight, 0.1, 1000)
 };
 const body = document.getElementsByTagName('body')[0];
 
@@ -28,14 +29,14 @@ body.appendChild(app.renderer.domElement);
 app.renderer.setSize(windowWidth, windowHeight);
 
 //LIGHTS
-// let light = new THREE.AmbientLight(0xffffff, 1.0);
-// app.scene.add(light);
+let light = new THREE.AmbientLight(0xffffff, 1.0);
+app.scene.add(light);
 
 app.camera.position.z = 1.5;
 
 //ヘルパー
-const axisHelper = new THREE.AxisHelper(100);
-app.scene.add(axisHelper);
+// const axisHelper = new THREE.AxisHelper(100);
+// app.scene.add(axisHelper);
 // const cameraHelper = new THREE.CameraHelper( app.camera );
 // app.scene.add(cameraHelper);
 
@@ -48,10 +49,25 @@ app.scene.add(axisHelper);
 let stats = new Stats();
 body.appendChild(stats.dom);
 
-var material = new THREE.MeshLambertMaterial({color:0x000000});
-var geometry = new THREE.SphereGeometry(0.5, 20, 20);
-var mesh = new THREE.Mesh(geometry, material);
-app.scene.add(mesh);
+
+
+loader.load('./src/assets/images/tx.jpg', function (texture) {
+
+  //Geometryを作成
+  var geometry = new THREE.PlaneGeometry( 1, 1, 32 );
+
+  // Material作成
+  let material = new THREE.MeshLambertMaterial({
+    map:texture,
+    color:0xCCCCCC
+  });
+  // Mesh作成
+  let mesh = new THREE.Mesh(geometry, material);
+
+  app.scene.add(mesh);
+
+  render();
+});
 
 // const webCam = new WebCam();
 
@@ -68,14 +84,14 @@ const meatball = new MeataBall(app);
 const composer = meatball.getComposer();
 
 
-render();
+
 
 function render() {
   time = clock.getElapsedTime();
   windowWidth = window.innerWidth;
   windowHeight = window.innerHeight;
 
-  stats.update();  
+  stats.update();
   composer.render();
   composer.passes[1].uniforms.time.value = time;
   requestAnimationFrame(render);

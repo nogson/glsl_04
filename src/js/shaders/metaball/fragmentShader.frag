@@ -30,22 +30,14 @@ void main() {
 
     vec2 pos = st.yx * vec2(2.,1.5) * 0.5 + time * 0.05;
 
-    // Add noise
-   pos = vec2(rotate2d( snoise2(pos) + time * 0.05));
+   pos = vec2(rotate2d( snoise2(pos) )) * 0.3;
 
-    // Draw lines
-    float pattern = lines(pos,0.59,0.6,7. + time * 0.05) ;
+    float pattern = lines(pos,0.0,0.5,7.) * 0.01;
 
    vec4 color = texture2D( tDiffuse, vec2(vUv.x + pattern, vUv.y + pattern));
 
-   // gl_FragColor = vec4(vec3(pattern) + vec3(0.,0.7,1.0),1.0);
+   gl_FragColor = vec4(vec3(pattern) + vec3(0.,0.7,1.0),1.0);
 
-gl_FragColor = color;
+    gl_FragColor = color;
 
-
-//    float noise = cnoise3(pos * 5.);
-//    gl_FragColor = vec4(vec3(noise),1.0);
-//    gl_FragColor = vec4( color.rgb , color.a );
-//    gl_FragColor.r = texture2D( tDiffuse, vUv + vec2(0.1,0.0)).r;
-//    gl_FragColor.g = texture2D( tDiffuse, vUv - vec2(0.1,0.0)).g;
 }
