@@ -33,9 +33,9 @@ void main() {
     vec2 pos3 = st.yx * vec2(5.,10.) * 0.3 + time * 0.03;
 
 
-   pos = vec2(rotate2d( snoise2(pos)) )  * 0.3;
-   pos2 = vec2(rotate2d( snoise2(pos2)))* 0.3;
-   pos3 = vec2(rotate2d( snoise2(pos3))) * 0.3 ;
+   pos = vec2(rotate2d( snoise2(pos)) ) + mod(time * 0.08,3.) * 0.3;
+   pos2 = vec2(rotate2d( snoise2(pos2))) + mod(time * 0.08,3.)* 0.3;
+   pos3 = vec2(rotate2d( snoise2(pos3))) + mod(time * 0.08,3.)* 0.3 ;
 
    float r = lines(pos,0.45,0.5,20.);
    float g = lines(pos2,0.45,0.5,20.);

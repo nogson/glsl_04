@@ -21,7 +21,7 @@ const body = document.getElementsByTagName('body')[0];
 
 
 app.renderer.setClearColor(new THREE.Color(0xffffff), 1.0);
-app.renderer.setPixelRatio(window.devicePixelRatio || 1);
+//app.renderer.setPixelRatio(window.devicePixelRatio || 1);
 
 // canvasをbodyに追加
 body.appendChild(app.renderer.domElement);
