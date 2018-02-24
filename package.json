@@ -33,7 +33,8 @@
     "webpack-dev-server": "^1.14.0"
   },
   "scripts": {
-    "start": "webpack-dev-server client.js --open --inline --hot --colors --port=8080"
+    "start": "webpack-dev-server client.js --open --inline --hot --colors --port=8080",
+    "build": "webpack"
   },
   "keywords": [],
   "repository": {
