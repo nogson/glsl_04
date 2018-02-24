@@ -20,7 +20,8 @@
     "three-effectcomposer": "0.0.1",
     "three-orbit-viewer": "^69.3.0",
     "three-vignette-background": "^1.0.2",
-    "transform-loader": "^0.2.3"
+    "transform-loader": "^0.2.3",
+    "webpack-uglify-js-plugin": "^1.1.9"
   },
   "devDependencies": {
     "babel-core": "^6.3.26",
@@ -34,7 +35,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server client.js --open --inline --hot --colors --port=8080",
-    "build": "webpack"
+    "build": "webpack -p"
   },
   "keywords": [],
   "repository": {

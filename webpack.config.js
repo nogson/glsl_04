@@ -31,5 +31,12 @@ module.exports = {
         loader: 'ify'
       }
     ]
-  }
+  },
+  plugins: [
+    new webpack.DefinePlugin({
+      PRODUCTION: JSON.stringify(true),
+    }),
+  ],
 }
+
+
