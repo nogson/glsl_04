@@ -3,14 +3,14 @@ const cache = hmr.cache(__filename)
 const glslify = require('glslify')
 const EffectComposer = require('three-effectcomposer')(THREE);
 
-const vertexShader = glslify('./shaders/metaball/vertexShader.vert');
-const fragmentShader = glslify('./shaders/metaball/fragmentShader.frag');
+const vertexShader = glslify('./shaders/posteffect/vertexShader.vert');
+const fragmentShader = glslify('./shaders/posteffect/fragmentShader.frag');
 
 let windowWidth = window.innerWidth;
 let windowHeight = window.innerHeight;
 let composer;
 
-module.exports = class MeatBall {
+module.exports = class PostEffect {
   constructor(app) {
     console.log(app)
     composer = new EffectComposer(app.renderer);

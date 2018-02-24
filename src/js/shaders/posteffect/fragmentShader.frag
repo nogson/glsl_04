@@ -26,18 +26,20 @@ float lines(in vec2 pos, float a,float b,float scale){
 void main() {
    vec2 st = gl_FragCoord.xy/resolution.xy;
 
-   //st.y *= resolution.y/resolution.x;
+   st.y *= resolution.y/resolution.x;
 
-    vec2 pos = st.yx * vec2(2.,1.5) * 0.5 + time * 0.05;
+    vec2 pos = st.yx * vec2(4.,2.) * 0.3 + time * 0.05;
+    vec2 pos2 = st.yx * vec2(10.,5.) * 0.3 + time * 0.04;
+    vec2 pos3 = st.yx * vec2(5.,10.) * 0.3 + time * 0.03;
 
-   pos = vec2(rotate2d( snoise2(pos) )) * 0.3;
 
-    float pattern = lines(pos,0.0,0.5,7.) * 0.01;
+   pos = vec2(rotate2d( snoise2(pos))+ mod(time * 0.1,2.)) * 0.3;
+   pos2 = vec2(rotate2d( snoise2(pos2))+ mod(time * 0.09,2.5)) * 0.3;
+   pos3 = vec2(rotate2d( snoise2(pos3))+ mod(time * 0.08,3.)) * 0.3 ;
 
-   vec4 color = texture2D( tDiffuse, vec2(vUv.x + pattern, vUv.y + pattern));
+   float r = lines(pos,0.45,0.5,20.);
+   float g = lines(pos2,0.45,0.5,20.);
+   float b = lines(pos3,0.45,0.5,20.);
 
-   gl_FragColor = vec4(vec3(pattern) + vec3(0.,0.7,1.0),1.0);
-
-    gl_FragColor = color;
-
+    gl_FragColor = vec4(r , g , b,1.0) ;
 }
