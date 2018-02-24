@@ -37,7 +37,6 @@ app.camera.position.z = 1.5;
 let stats = new Stats();
 body.appendChild(stats.dom);
 
-
 const posteffect = new PostEffect(app);
 const composer = posteffect.getComposer();
 
