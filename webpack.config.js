@@ -1,4 +1,6 @@
 const webpack = require('webpack')
+const webpackUglifyJsPlugin = require('webpack-uglify-js-plugin');
+
 module.exports = {
   entry: {
     app: ['./client.js']
